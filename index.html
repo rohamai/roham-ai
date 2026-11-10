@@ -1,23 +1,30 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" translate="no">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
     <title>roham.ai Platform</title>
+    <!-- استفاده از سرورهای سریع‌تر و بدون فیلتر -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js"></script>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css" rel="stylesheet" />
     <style>
         body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; color: #1e293b; }
         .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
         .fade-in { animation: fadeIn 0.5s ease-in; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* استایل متن بارگذاری */
+        #loading-text { text-align: center; margin-top: 35vh; font-size: 1.2rem; font-weight: bold; color: #3b82f6; direction: rtl; }
     </style>
 </head>
-<body>
-    <div id="root"></div>
+<body class="notranslate">
+    <div id="root">
+        <!-- این متن تا زمان لود کامل سایت نمایش داده می‌شود -->
+        <div id="loading-text" class="fade-in">⏳ در حال ارتباط با سرورهای roham.ai (لطفاً چند ثانیه صبر کنید)...</div>
+    </div>
 
     <script type="text/babel">
         const { useState } = React;
@@ -35,3 +42,105 @@
                 if (email === 'admin@roham.ai' && password === 'admin123') {
                     setUser({ name: 'روهام', role: 'admin' });
                     setTokens('نامحدود ∞');
+                } else {
+                    setUser({ name: 'کاربر جدید', role: 'user' });
+                }
+            };
+
+            const applyPromo = () => {
+                const code = promo.trim().toUpperCase();
+                if(code === 'ROHAM-BRONZE') { setTokens(Number(tokens) + 100); setMsg('✅ ۱۰۰ توکن به حساب شما اضافه شد'); }
+                else if(code === 'FRIEND-GOLD') { setTokens(Number(tokens) + 300); setMsg('✅ ۳۰۰ توکن به حساب شما اضافه شد'); }
+                else if(code === '4K-DIAMOND') { setTokens(Number(tokens) + 500); setMsg('✅ ۵۰۰ توکن به حساب شما اضافه شد'); }
+                else { setMsg('❌ کد وارد شده نامعتبر است'); }
+                setPromo('');
+                setTimeout(() => setMsg(''), 4000);
+            };
+
+            if (!user) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-4">
+                        <div className="glass-panel p-10 rounded-3xl shadow-2xl w-full max-w-md fade-in text-center">
+                            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">roham.ai</h1>
+                            <p className="text-gray-500 mb-8">پلتفرم هوشمند roham.ai</p>
+                            <form onSubmit={handleLogin} className="space-y-5">
+                     <div className="text-xl font-bold text-blue-600 mb-2">بسته طلایی</div>
+                                    <div className="text-3xl font-black text-gray-900 mb-2">۲۴۹,۰۰۰ <span className="text-sm font-normal text-gray-500">تومان</span></div>
+                                    <div className="text-gray-500">۳۰۰ توکن پردازش</div>
+                                </div>
+                                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
+                                    <div className="text-xl font-bold text-purple-600 mb-2">بسته الماسی</div>
+                                    <div className="text-3xl font-black text-gray-900 mb-2">۳۹۹,۰۰۰ <span className="text-sm font-normal text-gray-500">تومان</span></div>
+                                    <div className="text-gray-500">۵۰۰ توکن پردازش</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="text-2xl font-bold mb-6 text-gray-800 px-2">جعبه‌ابزار هوش مصنوعی</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {['ChatGPT (متن)', 'Midjourney (تصویر)', 'Gemini (تحلیل)', 'Gamma (ارائه)', 'GitHub Copilot (کد)', 'Suno (صدا)', 'Runway (ویدیو)', 'Figma AI (طراحی)'].map(tool => (
+                                    <div key={tool} className="glass-panel p-4 rounded-2xl text-center font-semibold text-gray-700 hover:bg-blue-50 transition cursor-pointer">
+                                        {tool}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <footer className="text-center py-8 text-gray-400 text-sm mt-10 border-t border-gray-200">
+                        <p>© 2026 تمامی حقوق برای پلتفرم roham.ai محفوظ است.</p>
+                        <p className="mt-2 font-mono bg-gray-200 inline-block px-3 py-1 rounded-full text-xs text-gray-600">نسخه 2.4.1 (Build 1052)</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html><input type="password" placeholder="رمز عبور" value={password} onChange={e=>setPassword(e.target.value)} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" required />
+                                <button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">ورود به پنل کاربری</button>
+                            </form>
+                            <p className="mt-6 text-sm text-gray-400">برای تست پنل مدیریت از ایمیل admin@roham.ai استفاده کنید.</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen pb-10">
+                    <nav className="glass-panel shadow-sm p-5 sticky top-0 z-50">
+                        <div className="max-w-6xl mx-auto flex justify-between items-center">
+                            <div className="text-2xl font-black text-blue-600 tracking-tighter">roham.ai</div>
+                            <div className="flex gap-4 items-center">
+                                {user.role === 'admin' && <span className="bg-purple-100 text-purple-700 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hidden md:inline-block">مدیریت کل</span>}
+                                <span className="bg-white border border-gray-200 px-4 py-2 rounded-xl text-sm font-bold shadow-sm">موجودی توکن: {tokens}</span>
+                            </div>
+                        </div>
+                    </nav>
+                    
+                    <div className="max-w-6xl mx-auto mt-10 p-4 space-y-10 fade-in">
+                        {user.role === 'admin' && (
+                            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-8 rounded-3xl shadow-xl">
+                                <h2 className="text-3xl font-bold mb-3">سلام روهام، به پنل مدیریت roham.ai خوش آمدید 👋</h2>
+                                <p className="text-purple-100 text-lg">شما به عنوان مدیر کل وارد شده‌اید و دسترسی نامحدود به تمامی امکانات دارید.</p>
+                            </div>
+                        )}
+
+                        <div className="glass-panel p-8 rounded-3xl shadow-lg">
+                            <h3 className="text-2xl font-bold mb-6 text-gray-800">تعرفه‌ها و شارژ حساب</h3>
+                            <div className="flex flex-col md:flex-row gap-4 mb-4">
+                                <input type="text" placeholder="کد تخفیف یا اشتراک (مثلا ROHAM-BRONZE)" value={promo} onChange={e=>setPromo(e.target.value)} className="flex-1 p-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none" />
+                                <button onClick={applyPromo} className="bg-gray-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-gray-800 transition">اعمال کد</button>
+                            </div>
+                            {msg && <div className="text-green-600 font-bold mb-6 bg-green-50 p-4 rounded-xl border border-green-200">{msg}</div>}
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
+                                    <div className="text-xl font-bold text-orange-600 mb-2">بسته برنزی</div>
+                                    <div className="text-3xl font-black text-gray-900 mb-2">۹۹,۰۰۰ <span className="text-sm font-normal text-gray-500">تومان</span></div>
+                                    <div className="text-gray-500">۱۰۰ توکن پردازش</div>
+                                </div>
+                                <div className="bg-gradient-to-b from-blue-50 to-white p-6 rounded-2xl shadow-md border border-blue-200 text-center transform md:-translate-y-2">           <input type="email" placeholder="ایمیل خود را وارد کنید" value={email} onChange={e=>setEmail(e.target.value)} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" required />

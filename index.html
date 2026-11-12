@@ -312,3 +312,254 @@ body {
 
 </body>
 </html>
+
+                                    <!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بخش ساخت کد تخفیف</title>
+  <style>
+    /* متغیرهای رنگی برای هماهنگی با قالب rohamai.ir */
+    :root {
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --border-color: #e2e8f0;
+      --brand-color: #6366f1;
+      --brand-hover: #4f46e5;
+    }
+
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      background-color: var(--bg-main);
+      padding: 50px;
+    }
+
+    /* دکمه تست برای باز کردن پنل */
+    .open-btn {
+      background-color: var(--brand-color);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* استایل‌های پنل ساخت کد تخفیف */
+    .admin-discount-section {
+      background-color: var(--bg-card);
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 400px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+      display: none; /* پیش‌فرض مخفی */
+    }
+
+    .admin-discount-section .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .admin-discount-section .panel-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    .admin-discount-section .panel-header .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #94a3b8;
+    }
+    .admin-discount-section .panel-header .close-btn:hover { color: #ef4444; }
+
+    .admin-discount-section .discount-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .admin-discount-section .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .admin-discount-section .input-group label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .admin-discount-section .input-group input,
+    .admin-discount-section .input-group select {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+    .admin-discount-section .input-group input:focus,
+    .admin-discount-section .input-group select:focus {
+      border-color: var(--brand-color);
+    }
+
+    .admin-discount-section .generate-btn {
+      background-color: var(--brand-color);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 8px;
+    }
+    .admin-discount-section .generate-btn:hover { background-color: var(--brand-hover); }
+
+    .admin-discount-section .active-codes-list {
+      margin-top: 20px;
+      display: none;
+    }
+    .admin-discount-section .active-codes-list h4 {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .admin-discount-section .active-codes-list ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .admin-discount-section .active-codes-list li {
+      background: #f1f5f9;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: #0f172a;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .admin-discount-section .active-codes-list span.percent {
+      font-weight: bold;
+      color: #10b981;
+    }
+
+    /* پس‌زمینه تاریک هنگام باز بودن پنل */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 999;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+
+
+    <!-- دکمه تست باز کردن پنل -->
+  <button class="open-btn" onclick="openDiscountPanel()">🎁 باز کردن پنل ساخت تخفیف</button>
+
+  <!-- پس‌زمینه تاریک پشت پنل -->
+  <div class="overlay" id="modal-overlay" onclick="closeDiscountPanel()"></div>
+
+  <!-- پنل ساخت کد تخفیف -->
+  <section class="admin-discount-section" id="discount-panel">
+    <div class="panel-header">
+      <h3>ایجاد کد تخفیف اختصاصی 🎁</h3>
+      <button class="close-btn" onclick="closeDiscountPanel()">✖</button>
+    </div>
+    
+    <div class="discount-form">
+      <div class="input-group">
+        <label>عبارت دقیق کد تخفیف (بدون فاصله)</label>
+        <input type="text" id="new-code-name" placeholder="مثلا: ROHAM20" />
+      </div>
+      
+      <div class="input-group">
+        <label>سقف درصد تخفیف</label>
+        <select id="discount-percent">
+          <option value="10">۱۰ درصد</option>
+          <option value="20">۲۰ درصد</option>
+          <option value="50">۵۰ درصد</option>
+          <option value="100">۱۰۰ درصد (رایگان)</option>
+        </select>
+      </div>
+      
+      <button class="generate-btn" onclick="createDiscount()">ذخیره کد در سیستم</button>
+    </div>
+
+    <!-- بخشی برای نمایش کدهای ساخته شده -->
+    <div class="active-codes-list" id="active-codes-container">
+      <h4>کدهای فعال:</h4>
+      <ul id="codes-list"></ul>
+    </div>
+  </section>
+
+  <script>
+    // دیتابیس موقت برای نگهداری کدهای تخفیف
+    let activeDiscounts = {};
+
+    // توابع باز و بسته کردن پنل و پس‌زمینه تاریک
+    function openDiscountPanel() {
+      document.getElementById('discount-panel').style.display = 'block';
+      document.getElementById('modal-overlay').style.display = 'block';
+    }
+
+    function closeDiscountPanel() {
+      document.getElementById('discount-panel').style.display = 'none';
+      document.getElementById('modal-overlay').style.display = 'none';
+    }
+
+    // منطق ساخت کد تخفیف جدید و اضافه کردن آن به لیست
+    function createDiscount() {
+      const codeInput = document.getElementById('new-code-name');
+      const percentInput = document.getElementById('discount-percent');
+      
+      const codeName = codeInput.value.trim();
+      const percent = percentInput.value;
+
+      if (!codeName) {
+        alert("لطفاً نام کد تخفیف را وارد کن!");
+        return;
+      }
+
+      // ذخیره در آبجکت جاوااسکریپت
+      activeDiscounts[codeName] = percent;
+
+      // اضافه کردن به لیست بصری داخل پنل
+      const listContainer = document.getElementById('active-codes-container');
+      const codesList = document.getElementById('codes-list');
+      
+      listContainer.style.display = 'block'; // نمایش بخش لیست
+      
+      const newListItem = document.createElement('li');
+      newListItem.innerHTML = کد: <strong>${codeName}</strong> <span class="percent">${percent}٪ تخفیف</span>;
+      codesList.appendChild(newListItem);
+
+      // پاک کردن کادر ورودی برای کدهای بعدی
+      codeInput.value = '';
+    }
+  </script>
+
+</body>
+</html>

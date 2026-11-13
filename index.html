@@ -1,565 +1,591 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" translate="no">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google" content="notranslate">
-    <title>roham.ai Platform</title>
-    <!-- استفاده از سرورهای سریع‌تر و بدون فیلتر -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css" rel="stylesheet" />
-    <style>
-        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        /* استایل متن بارگذاری */
-        #loading-text { text-align: center; margin-top: 35vh; font-size: 1.2rem; font-weight: bold; color: #3b82f6; direction: rtl; }
-    </style>
-</head>
-<body class="notranslate">
-    <div id="root">
-        <!-- این متن تا زمان لود کامل سایت نمایش داده می‌شود -->
-        <div id="loading-text" class="fade-in">⏳ در حال ارتباط با سرورهای roham.ai (لطفاً چند ثانیه صبر کنید)...</div>
-    </div>
-
-    <script type="text/babel">
-        const { useState } = React;
-
-        function App() {
-            const [user, setUser] = useState(null);
-            const [email, setEmail] = useState('');
-            const [password, setPassword] = useState('');
-            const [tokens, setTokens] = useState(30);
-            const [promo, setPromo] = useState('');
-            const [msg, setMsg] = useState('');
-
-            const handleLogin = (e) => {
-                e.preventDefault();
-                if (email === 'admin@roham.ai' && password === 'admin123') {
-                    setUser({ name: 'روهام', role: 'admin' });
-                    setTokens('نامحدود ∞');
-                } else {
-                    setUser({ name: 'کاربر جدید', role: 'user' });
-                }
-            };
-
-            const applyPromo = () => {
-                const code = promo.trim().toUpperCase();
-                if(code === 'ROHAM-BRONZE') { setTokens(Number(tokens) + 100); setMsg('✅ ۱۰۰ توکن به حساب شما اضافه شد'); }
-                else if(code === 'FRIEND-GOLD') { setTokens(Number(tokens) + 300); setMsg('✅ ۳۰۰ توکن به حساب شما اضافه شد'); }
-                else if(code === '4K-DIAMOND') { setTokens(Number(tokens) + 500); setMsg('✅ ۵۰۰ توکن به حساب شما اضافه شد'); }
-                else { setMsg('❌ کد وارد شده نامعتبر است'); }
-                setPromo('');
-                setTimeout(() => setMsg(''), 4000);
-            };
-
-            if (!user) {
-                return (
-                    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-                        <div className="glass-panel p-10 rounded-3xl shadow-2xl w-full max-w-md fade-in text-center">
-                            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">roham.ai</h1>
-                            <p className="text-gray-500 mb-8">پلتفرم هوشمند roham.ai</p>
-                            <form onSubmit={handleLogin} className="space-y-5">
-                     <div className="text-xl font-bold text-blue-600 mb-2">بسته طلایی</div>
-                                    <div className="text-3xl font-black text-gray-900 mb-2">۲۴۹,۰۰۰ <span className="text-sm font-normal text-gray-500">تومان</span></div>
-                                    <div className="text-gray-500">۳۰۰ توکن پردازش</div>
-                                </div>
-                                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
-                                    <div className="text-xl font-bold text-purple-600 mb-2">بسته الماسی</div>
-                                    <div className="text-3xl font-black text-gray-900 mb-2">۳۹۹,۰۰۰ <span className="text-sm font-normal text-gray-500">تومان</span></div>
-                                    <div className="text-gray-500">۵۰۰ توکن پردازش</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 className="text-2xl font-bold mb-6 text-gray-800 px-2">جعبه‌ابزار هوش مصنوعی</h3>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                {['ChatGPT (متن)', 'Midjourney (تصویر)', 'Gemini (تحلیل)', 'Gamma (ارائه)', 'GitHub Copilot (کد)', 'Suno (صدا)', 'Runway (ویدیو)', 'Figma AI (طراحی)'].map(tool => (
-                                    <div key={tool} className="glass-panel p-4 rounded-2xl text-center font-semibold text-gray-700 hover:bg-blue-50 transition cursor-pointer">
-                                        {tool}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <footer className="text-center py-8 text-gray-400 text-sm mt-10 border-t border-gray-200">
-                        <p>© 2026 تمامی حقوق برای پلتفرم roham.ai محفوظ است.</p>
-                        <p className="mt-2 font-mono bg-gray-200 inline-block px-3 py-1 rounded-full text-xs text-gray-600">نسخه 2.4.1 (Build 1052)</p>
-                    </footer>
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html><input type="password" placeholder="رمز عبور" value={password} onChange={e=>setPassword(e.target.value)} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" required />
-                                <button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">ورود به پنل کاربری</button>
-                            </form>
-                            <p className="mt-6 text-sm text-gray-400">برای تست پنل مدیریت از ایمیل admin@roham.ai استفاده کنید.</p>
-                        </div>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="min-h-screen pb-10">
-                    <nav className="glass-panel shadow-sm p-5 sticky top-0 z-50">
-                        <div className="max-w-6xl mx-auto flex justify-between items-center">
-                            <div className="text-2xl font-black text-blue-600 tracking-tighter">roham.ai</div>
-                            <div className="flex gap-4 items-center">
-                                {user.role === 'admin' && <span className="bg-purple-100 text-purple-700 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hidden md:inline-block">مدیریت کل</span>}
-                                <span className="bg-white border border-gray-200 px-4 py-2 rounded-xl text-sm font-bold shadow-sm">موجودی توکن: {tokens}</span>
-                            </div>
-                        </div>
-                    </nav>
-                    
-                    <div className="max-w-6xl mx-auto mt-10 p-4 space-y-10 fade-in">
-                        {user.role === 'admin' && (
-                            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-8 rounded-3xl shadow-xl">
-                                <h2 className="text-3xl font-bold mb-3">سلام روهام، به پنل مدیریت roham.ai خوش آمدید 👋</h2>
-                                <p className="text-purple-100 text-lg">شما به عنوان مدیر کل وارد شده‌اید و دسترسی نامحدود به تمامی امکانات دارید.</p>
-                            </div>
-                        )}
-
-                        <div className="glass-panel p-8 rounded-3xl shadow-lg">
-                            <h3 className="text-2xl font-bold mb-6 text-gray-800">تعرفه‌ها و شارژ حساب</h3>
-                            <div className="flex flex-col md:flex-row gap-4 mb-4">
-                                <input type="text" placeholder="کد تخفیف یا اشتراک (مثلا ROHAM-BRONZE)" value={promo} onChange={e=>setPromo(e.target.value)} className="flex-1 p-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none" />
-                                <button onClick={applyPromo} className="bg-gray-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-gray-800 transition">اعمال کد</button>
-                            </div>
-                            {msg && <div className="text-green-600 font-bold mb-6 bg-green-50 p-4 rounded-xl border border-green-200">{msg}</div>}
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
-                                    <div className="text-xl font-bold text-orange-600 mb-2">بسته برنزی</div>
-                                    <div className="text-3xl font-black text-gray-900 mb-2">۹۹,۰۰۰ <span className="text-sm font-normal text-gray-500">تومان</span></div>
-                                    <div className="text-gray-500">۱۰۰ توکن پردازش</div>
-                                </div>
-                                <div className="bg-gradient-to-b from-blue-50 to-white p-6 rounded-2xl shadow-md border border-blue-200 text-center transform md:-translate-y-2">           <input type="email" placeholder="ایمیل خود را وارد کنید" value={email} onChange={e=>setEmail(e.target.value)} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" required />
-body, * {
-  font-family: 'Vazirmatn', sans-serif !important;
-}
-                                    @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
-
-
-                                    <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roham AI Platform</title>
-  
-  <!-- اضافه کردن فونت وزیرمتن مستقیم در HTML برای سرعت بهتر -->
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-  
-  <!-- لینک فایل CSS کامپایل شده شما -->
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>رهام AI</title>
 
-  <!-- کدهای هدر و محتوای اصلی سایت شما اینجا قرار میگیره -->
-  
-  <!-- ================= فوتر سایت ================= -->
-  <footer class="roham-footer">
-    <div class="footer-container">
-      
-      <!-- بخش اول: معرفی و نسخه سایت -->
-      <div class="footer-section">
-        <h3>پلتفرم Roham AI</h3>
-        <p>دستیار هوشمند شما برای خلق ایده‌ها و یادگیری.</p>
-        <span class="version-badge">نسخه ۱.۲.۱</span>
-      </div>
+  <style>
+    @font-face {
+      font-family: Vazirmatn;
+      src: url("./Vazirmatn-variable.woff2") format("woff2");
+      font-weight: 100 900;
+      font-display: swap;
+    }
 
-      <!-- بخش دوم: لینک‌های سریع به هوش‌های مصنوعی -->
-      <div class="footer-section">
-        <h3>دسترسی سریع (هوش مصنوعی)</h3>
-        <ul class="quick-links">
-          <li><a href="https://chat.openai.com" target="_blank">ChatGPT (OpenAI)</a></li>
-          <li><a href="https://gemini.google.com" target="_blank">Google Gemini</a></li>
-          <li><a href="https://claude.ai" target="_blank">Claude AI</a></li>
-          <li><a href="https://midjourney.com" target="_blank">Midjourney</a></li>
-        </ul>
-      </div>
+    * {
+      box-sizing: border-box;
+      font-family: Vazirmatn, Tahoma, sans-serif !important;
+    }
 
-      <!-- بخش سوم: شبکه‌های اجتماعی و آدرس‌ها -->
-      <div class="footer-section">
-        <h3>ارتباط با روهام</h3>
-        <ul class="social-links">
-          <li><a href="https://instagram.com/rohamai" target="_blank">اینستاگرام: rohamai@</a></li>
-          <!-- یادت نره آدرس کانال بله رو پایین جایگذاری کنی -->
-          <li><a href="https://ble.ir/YOUR_ID" target="_blank">کانال هوش مصنوعی در بله</a></li>
-          <li><a href="https://rohamai.ir" target="_blank">وب‌سایت: rohamai.ir</a></li>
-        </ul>
-      </div>
+    :root {
+      --bg: #050816;
+      --card: rgba(15, 23, 42, .75);
+      --card-2: rgba(30, 41, 80, .65);
+      --text: #f8fafc;
+      --muted: #a5b4fc;
+      --blue: #2563eb;
+      --violet: #7c3aed;
+      --border: rgba(129, 140, 248, .25);
+    }
 
-    </div>
-    
-    <!-- بخش کپی‌رایت پایین فوتر -->
-    <div class="footer-bottom">
-      <p>تمامی حقوق برای پلتفرم Roham AI محفوظ است © ۲۰۲۶</p>
-    </div>
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--blue) transparent;
+    }
 
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(37, 99, 235, .25), transparent 35%),
+        radial-gradient(circle at 90% 100%, rgba(124, 58, 237, .25), transparent 40%),
+        var(--bg);
+      min-height: 100vh;
+    }
 
-      // ================= تنظیمات عمومی و فونت =================
-body, * {
-  // اعمال فونت وزیرمتن روی کل سایت به عنوان فونت اصلی
-  font-family: 'Vazirmatn', sans-serif !important; 
-  box-sizing: border-box;
-}
+    button, input {
+      font: inherit;
+    }
 
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column; // این باعث میشه فوتر همیشه بچسبه پایین صفحه
-}
+    button {
+      cursor: pointer;
+    }
 
-// ================= استایل‌های فوتر =================
-.roham-footer {
-  background-color: #12121c; // پس‌زمینه تیره
-  color: #f5f6fa;
-  padding: 50px 20px 20px;
-  border-top: 2px solid #8c7ae6; // نوار بنفش بالای فوتر
-  margin-top: auto; // هل دادن فوتر به پایین‌ترین قسمت صفحه
-  direction: rtl;
+    .glass {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 50px rgba(0,0,0,.3);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
 
-  .footer-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    gap: 30px;
-  }
+    header {
+      position: sticky;
+      top: 15px;
+      z-index: 10;
+      width: min(1150px, calc(100% - 24px));
+      margin: 15px auto;
+      padding: 14px 18px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-  .footer-section {
-    flex: 1;
-    min-width: 250px;
+    .brand {
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
 
-    h3 {
-      font-size: 1.25rem;
-      margin-bottom: 20px;
-      color: #8c7ae6; // رنگ بنفش برای تیترها
-      font-weight: 700;
+    .brand span,
+    .accent {
+      color: #818cf8;
+    }
+
+    nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    nav button,
+    .ghost {
+      background: transparent;
+      color: #cbd5e1;
+      border: 1px solid transparent;
+      padding: 10px 14px;
+      border-radius: 12px;
+    }
+
+    nav button:hover,
+    .ghost:hover {
+      border-color: var(--border);
+      background: rgba(99,102,241,.15);
+    }
+
+    .primary {
+      border: 0;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 13px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      box-shadow: 0 10px 25px rgba(37,99,235,.3);
+    }
+
+    main {
+      width: min(1150px, calc(100% - 24px));
+      margin: auto;
+    }
+
+    .hero {
+      min-height: 500px;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 25px;
+      align-items: center;
+      padding: 70px 0 35px;
+    }
+
+    h1 {
+      font-size: clamp(2.3rem, 6vw, 5rem);
+      line-height: 1.25;
+      margin: 20px 0;
+    }
+
+    h2 {
       margin-top: 0;
     }
 
     p {
-      font-size: 0.95rem;
-      color: #b2bec3;
-      line-height: 1.8;
-      margin-bottom: 20px;
+      color: #cbd5e1;
+      line-height: 2;
     }
 
-    .version-badge {
-      display: inline-block;
-      background-color: rgba(140, 122, 230, 0.15);
-      color: #8c7ae6;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      border: 1px solid rgba(140, 122, 230, 0.3);
+    .gradient {
+      background: linear-gradient(90deg, #60a5fa, #a78bfa);
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
     }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-
-      li {
-        margin-bottom: 12px;
-
-        a {
-          color: #dcdde1;
-          text-decoration: none;
-          font-size: 0.95rem;
-          transition: all 0.3s ease;
-          display: inline-block;
-          
-          &:hover {
-            color: #8c7ae6; 
-            transform: translateX(-5px); // افکت حرکت ملایم به چپ موقع رفتن موس
-          }
-        }
-      }
-    }
-  }
-
-  .footer-bottom {
-    text-align: center;
-    margin-top: 50px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 0.85rem;
-    color: #636e72;
-    
-    p {
-      margin: 0;
-    }
-  }
-}
-  </footer>
-
-</body>
-</html>
-
-                                    <!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بخش ساخت کد تخفیف</title>
-  <style>
-    /* متغیرهای رنگی برای هماهنگی با قالب rohamai.ir */
-    :root {
-      --bg-main: #f8fafc;
-      --bg-card: #ffffff;
-      --text-primary: #0f172a;
-      --text-secondary: #64748b;
-      --border-color: #e2e8f0;
-      --brand-color: #6366f1;
-      --brand-hover: #4f46e5;
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 25px;
     }
 
-    body {
-      font-family: Tahoma, Arial, sans-serif;
-      background-color: var(--bg-main);
-      padding: 50px;
+    .profile {
+      border-radius: 30px;
+      padding: 28px;
+      text-align: center;
     }
 
-    /* دکمه تست برای باز کردن پنل */
-    .open-btn {
-      background-color: var(--brand-color);
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
+    .avatar {
+      width: 120px;
+      height: 120px;
+      margin: auto auto 18px;
+      border-radius: 35px;
+      display: grid;
+      place-items: center;
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
     }
 
-    /* استایل‌های پنل ساخت کد تخفیف */
-    .admin-discount-section {
-      background-color: var(--bg-card);
-      padding: 24px;
-      border-radius: 16px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-      width: 100%;
-      max-width: 400px;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 1000;
-      display: none; /* پیش‌فرض مخفی */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 20px;
     }
 
-    .admin-discount-section .panel-header {
+    .stat {
+      padding: 12px;
+      border-radius: 15px;
+      background: rgba(30, 41, 80, .7);
+      border: 1px solid var(--border);
+    }
+
+    .stat strong {
+      display: block;
+      color: #a5b4fc;
+      font-size: 1.3rem;
+    }
+
+    section {
+      margin: 45px 0;
+    }
+
+    .section-title {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
-    .admin-discount-section .panel-header h3 {
-      margin: 0;
-      font-size: 1.1rem;
-      color: var(--text-primary);
-    }
-
-    .admin-discount-section .panel-header .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.2rem;
-      cursor: pointer;
-      color: #94a3b8;
-    }
-    .admin-discount-section .panel-header .close-btn:hover { color: #ef4444; }
-
-    .admin-discount-section .discount-form {
-      display: flex;
-      flex-direction: column;
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
 
-    .admin-discount-section .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .card {
+      border-radius: 22px;
+      overflow: hidden;
     }
 
-    .admin-discount-section .input-group label {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
+    .card img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
     }
 
-    .admin-discount-section .input-group input,
-    .admin-discount-section .input-group select {
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      outline: none;
-      font-family: inherit;
-      transition: border-color 0.3s;
-    }
-    .admin-discount-section .input-group input:focus,
-    .admin-discount-section .input-group select:focus {
-      border-color: var(--brand-color);
+    .card-content {
+      padding: 20px;
     }
 
-    .admin-discount-section .generate-btn {
-      background-color: var(--brand-color);
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 8px;
-    }
-    .admin-discount-section .generate-btn:hover { background-color: var(--brand-hover); }
-
-    .admin-discount-section .active-codes-list {
-      margin-top: 20px;
-      display: none;
-    }
-    .admin-discount-section .active-codes-list h4 {
-      font-size: 0.9rem;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-    .admin-discount-section .active-codes-list ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .admin-discount-section .active-codes-list li {
-      background: #f1f5f9;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      color: #0f172a;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .admin-discount-section .active-codes-list span.percent {
-      font-weight: bold;
-      color: #10b981;
+    .card h3 {
+      margin-top: 0;
     }
 
-    /* پس‌زمینه تاریک هنگام باز بودن پنل */
-    .overlay {
+    .modal {
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
-      z-index: 999;
+      inset: 0;
+      z-index: 20;
       display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(0,0,0,.75);
+    }
+
+    .modal.show {
+      display: grid;
+    }
+
+    .modal-box {
+      width: min(460px, 100%);
+      padding: 26px;
+      border-radius: 25px;
+    }
+
+    input {
+      width: 100%;
+      margin: 8px 0 14px;
+      padding: 13px;
+      border-radius: 13px;
+      color: white;
+      background: rgba(2,6,23,.8);
+      border: 1px solid var(--border);
+      outline: none;
+    }
+
+    label {
+      color: #cbd5e1;
+      font-size: .9rem;
+    }
+
+    .close {
+      float: left;
+      border: 0;
+      color: #cbd5e1;
+      background: transparent;
+      font-size: 1.4rem;
+    }
+
+    footer {
+      width: min(1150px, calc(100% - 24px));
+      margin: 50px auto 25px;
+      padding: 20px;
+      border-radius: 20px;
+      text-align: center;
+      color: #94a3b8;
+    }
+
+    #dashboard {
+      display: none;
+    }
+
+    .admin-box {
+      padding: 22px;
+      border-radius: 22px;
+    }
+
+    .user-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .user {
+      padding: 13px;
+      border-radius: 13px;
+      background: rgba(30,41,80,.65);
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 760px) {
+      header {
+        top: 8px;
+        margin-top: 8px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 45px;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .profile {
+        padding: 22px;
+      }
+
+      .section-title {
+        display: block;
+      }
+
+      .section-title button {
+        margin-top: 12px;
+      }
     }
   </style>
 </head>
+
 <body>
+  <header class="glass">
+    <div class="brand">رهام<span>.AI</span></div>
 
+    <nav>
+      <button onclick="goHome()">خانه</button>
+      <button onclick="showBlogs()">وبلاگ</button>
+      <button onclick="showDashboard()">پنل کاربری</button>
+    </nav>
 
+    <button class="primary" onclick="openLogin()">ورود</button>
+  </header>
 
-    <!-- دکمه تست باز کردن پنل -->
-  <button class="open-btn" onclick="openDiscountPanel()">🎁 باز کردن پنل ساخت تخفیف</button>
+  <main>
+    <section id="home">
+      <div class="hero">
+        <div>
+          <span class="accent">پلتفرم هوش مصنوعی نسل جدید</span>
+          <h1>ایده‌هایت را با <span class="gradient">رهام AI</span> زنده کن</h1>
+          <p>
+            گفت‌وگو، یادگیری، تولید تصویر و کمک برنامه‌نویسی
+            در یک محیط سریع، زیبا و شیشه‌ای.
+          </p>
 
-  <!-- پس‌زمینه تاریک پشت پنل -->
-  <div class="overlay" id="modal-overlay" onclick="closeDiscountPanel()"></div>
+          <div class="actions">
+            <button class="primary" onclick="openLogin()">شروع کار</button>
+            <button class="ghost" onclick="showBlogs()">مطالعه وبلاگ</button>
+          </div>
+        </div>
 
-  <!-- پنل ساخت کد تخفیف -->
-  <section class="admin-discount-section" id="discount-panel">
-    <div class="panel-header">
-      <h3>ایجاد کد تخفیف اختصاصی 🎁</h3>
-      <button class="close-btn" onclick="closeDiscountPanel()">✖</button>
-    </div>
-    
-    <div class="discount-form">
-      <div class="input-group">
-        <label>عبارت دقیق کد تخفیف (بدون فاصله)</label>
-        <input type="text" id="new-code-name" placeholder="مثلا: ROHAM20" />
+        <div class="profile glass">
+          <div class="avatar">ر</div>
+          <h2>رهام</h2>
+          <p>توسعه‌دهنده و سازندهٔ پلتفرم هوش مصنوعی</p>
+
+          <div class="stats">
+            <div class="stat">
+              <strong>۱۲</strong>
+              سال
+            </div>
+            <div class="stat">
+              <strong>۲۴/۷</strong>
+              دسترسی
+            </div>
+            <div class="stat">
+              <strong>۴K</strong>
+              تصویر
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <div class="input-group">
-        <label>سقف درصد تخفیف</label>
-        <select id="discount-percent">
-          <option value="10">۱۰ درصد</option>
-          <option value="20">۲۰ درصد</option>
-          <option value="50">۵۰ درصد</option>
-          <option value="100">۱۰۰ درصد (رایگان)</option>
-        </select>
-      </div>
-      
-      <button class="generate-btn" onclick="createDiscount()">ذخیره کد در سیستم</button>
-    </div>
+    </section>
 
-    <!-- بخشی برای نمایش کدهای ساخته شده -->
-    <div class="active-codes-list" id="active-codes-container">
-      <h4>کدهای فعال:</h4>
-      <ul id="codes-list"></ul>
+    <section id="blogs">
+      <div class="section-title">
+        <div>
+          <h2>وبلاگ و آموزش</h2>
+          <p>مطالب کاربردی دربارهٔ هوش مصنوعی و تکنولوژی</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card glass">
+          <img src="https://image.pollinations.ai/prompt/blue%20violet%20AI%20brain?width=800&height=500&nologo=true">
+          <div class="card-content">
+            <h3>مدل‌های زبانی بزرگ</h3>
+            <p>
+              مدل‌های زبانی با آموزش روی حجم بزرگی از متن می‌توانند
+              خلاصه‌سازی، ترجمه، تحلیل و تولید محتوا انجام دهند.
+            </p>
+          </div>
+        </article>
+
+        <article class="card glass">
+          <img src="https://image.pollinations.ai/prompt/blue%20violet%20AI%20image%20generation?width=800&height=500&nologo=true">
+          <div class="card-content">
+            <h3>ساخت تصویر با هوش مصنوعی</h3>
+            <p>
+              با نوشتن توضیح دقیق دربارهٔ سوژه، نور، سبک و ترکیب‌بندی،
+              می‌توان تصویرهای خلاقانه و حرفه‌ای تولید کرد.
+            </p>
+          </div>
+        </article>
+
+        <article class="card glass">
+          <img src="https://image.pollinations.ai/prompt/dark%20blue%20violet%20cybersecurity?width=800&height=500&nologo=true">
+          <div class="card-content">
+            <h3>امنیت در برنامه‌های وب</h3>
+            <p>
+              اعتبارسنجی ورودی، نشست امن، HTTPS و کنترل دسترسی سمت سرور
+              برای ساخت یک برنامهٔ قابل اعتماد ضروری هستند.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="dashboard">
+      <div class="admin-box glass">
+        <h2 id="dashboard-title">پنل کاربری</h2>
+        <p id="dashboard-info"></p>
+        <div id="users" class="user-list"></div>
+        <button class="primary" onclick="logout()">خروج از حساب</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="glass">
+    © ۲۰۲۶ رهام AI
+  </footer>
+
+  <div id="loginModal" class="modal">
+    <div class="modal-box glass">
+      <button class="close" onclick="closeLogin()">×</button>
+      <h2>ورود به حساب</h2>
+
+      <label>ایمیل</label>
+      <input id="email" type="email" placeholder="example@gmail.com">
+
+      <label>رمز عبور</label>
+      <input id="password" type="password" placeholder="رمز عبور">
+
+      <label>نام نمایشی برای کاربران عادی</label>
+      <input id="name" type="text" placeholder="نام شما">
+
+      <button class="primary" onclick="login()">ورود</button>
+      <p id="message"></p>
     </div>
-  </section>
+  </div>
 
   <script>
-    // دیتابیس موقت برای نگهداری کدهای تخفیف
-    let activeDiscounts = {};
+    const ADMIN_EMAIL = "roham@rohamai.ir";
+    const ADMIN_PASSWORD = "roham123";
 
-    // توابع باز و بسته کردن پنل و پس‌زمینه تاریک
-    function openDiscountPanel() {
-      document.getElementById('discount-panel').style.display = 'block';
-      document.getElementById('modal-overlay').style.display = 'block';
+    const users = [
+      { name: "سارا مجیدی", email: "sara@test.com", plan: "پریمیوم" },
+      { name: "امیر علیپور", email: "amir@test.com", plan: "رایگان" }
+    ];
+
+    let currentUser = null;
+
+    function openLogin() {
+      document.getElementById("loginModal").classList.add("show");
     }
 
-    function closeDiscountPanel() {
-      document.getElementById('discount-panel').style.display = 'none';
-      document.getElementById('modal-overlay').style.display = 'none';
+    function closeLogin() {
+      document.getElementById("loginModal").classList.remove("show");
     }
 
-    // منطق ساخت کد تخفیف جدید و اضافه کردن آن به لیست
-    function createDiscount() {
-      const codeInput = document.getElementById('new-code-name');
-      const percentInput = document.getElementById('discount-percent');
-      
-      const codeName = codeInput.value.trim();
-      const percent = percentInput.value;
+    function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const name = document.getElementById("name").value.trim();
 
-      if (!codeName) {
-        alert("لطفاً نام کد تخفیف را وارد کن!");
+      if (!email || !password) {
+        document.getElementById("message").textContent = "ایمیل و رمز عبور را وارد کنید.";
         return;
       }
 
-      // ذخیره در آبجکت جاوااسکریپت
-      activeDiscounts[codeName] = percent;
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        currentUser = {
+          name: "رهام",
+          email,
+          role: "admin",
+          plan: "نامحدود"
+        };
 
-      // اضافه کردن به لیست بصری داخل پنل
-      const listContainer = document.getElementById('active-codes-container');
-      const codesList = document.getElementById('codes-list');
-      
-      listContainer.style.display = 'block'; // نمایش بخش لیست
-      
-      const newListItem = document.createElement('li');
-      newListItem.innerHTML = کد: <strong>${codeName}</strong> <span class="percent">${percent}٪ تخفیف</span>;
-      codesList.appendChild(newListItem);
+        document.getElementById("message").textContent = "ورود مدیر با موفقیت انجام شد.";
+      } else {
+        currentUser = {
+          name: name || "کاربر جدید",
+          email,
+          role: "user",
+          plan: "رایگان"
+        };
 
-      // پاک کردن کادر ورودی برای کدهای بعدی
-      codeInput.value = '';
+        users.push({
+          name: currentUser.name,
+          email: currentUser.email,
+          plan: "رایگان"
+        });
+
+        document.getElementById("message").textContent = "حساب کاربری ساخته شد.";
+      }
+
+      setTimeout(() => {
+        closeLogin();
+        showDashboard();
+      }, 700);
+    }
+
+    function showDashboard() {
+      if (!currentUser) {
+        openLogin();
+        return;
+      }
+
+      document.getElementById("home").style.display = "none";
+      document.getElementById("blogs").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+
+      document.getElementById("dashboard-title").textContent =
+        currentUser.role === "admin" ? "پنل مدیریت مدیر" : "پنل کاربری";
+
+      document.getElementById("dashboard-info").textContent =
+        `نام: ${currentUser.name} | ایمیل: ${currentUser.email} | اشتراک: ${currentUser.plan}`;
+
+      const list = document.getElementById("users");
+      list.innerHTML = "";
+
+      if (currentUser.role === "admin") {
+        users.forEach(user => {
+          list.innerHTML += `
+            <div class="user">
+              نام: ${user.name}<br>
+              ایمیل: ${user.email}<br>
+              اشتراک: ${user.plan}
+            </div>
+          `;
+        });
+      } else {
+        list.innerHTML = "<p>شما فقط اطلاعات حساب خود را مشاهده می‌کنید.</p>";
+      }
+    }
+
+    function showBlogs() {
+      document.getElementById("home").style.display = "none";
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("blogs").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function goHome() {
+      document.getElementById("home").style.display = "block";
+      document.getElementById("blogs").style.display = "block";
+      document.getElementById("dashboard").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function logout() {
+      currentUser = null;
+      goHome();
     }
   </script>
-
 </body>
 </html>
